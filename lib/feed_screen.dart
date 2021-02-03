@@ -32,7 +32,7 @@ class FeedScreen extends StatelessWidget {
             ],
           )
       ),
-      body: ListView.builder(itemBuilder: feedListBuilder, itemCount: 3,),
+      body: ListView.builder(itemBuilder: feedListBuilder, itemCount: 30,),
     );
   }
 
