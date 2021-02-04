@@ -5,6 +5,11 @@ import 'package:instagram_clone_ver2/constant/screen_size.dart';
 import 'package:instagram_clone_ver2/widgets/rounded_avatar.dart';
 
 class ProfileBody extends StatefulWidget {
+
+  final Function() onMenuChanged;
+
+  const ProfileBody({Key key, this.onMenuChanged}) : super(key: key);
+
   @override
   _ProfileBodyState createState() => _ProfileBodyState();
 }
@@ -16,52 +21,82 @@ class _ProfileBodyState extends State<ProfileBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate([
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(common_gap),
-                    child: RoundedAvatar(
-                      size: 100,
+    return SafeArea(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          _appBar(),
+          Expanded(
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildListDelegate([
+                    Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(common_gap),
+                          child: RoundedAvatar(
+                            size: 100,
+                          ),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: common_gap),
+                            child: Table(
+                              children: [
+                                TableRow(children: [
+                                  _valueText('998'),
+                                  _valueText('10394'),
+                                  _valueText('1111'),
+                                ]),
+                                TableRow(children: [
+                                  _labelText('Post'),
+                                  _labelText('Follower'),
+                                  _labelText('Following'),
+                                ]),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: common_gap),
-                      child: Table(
-                        children: [
-                          TableRow(children: [
-                            _valueText('998'),
-                            _valueText('10394'),
-                            _valueText('1111'),
-                          ]),
-                          TableRow(children: [
-                            _labelText('Post'),
-                            _labelText('Follower'),
-                            _labelText('Following'),
-                          ]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              _userName(),
-              _userBio(),
-              _editProfileBtn(),
-              _tabButton(),
-              _selectedIndicator(),
-            ]),
+                    _userName(),
+                    _userBio(),
+                    _editProfileBtn(),
+                    _tabButton(),
+                    _selectedIndicator(),
+                  ]),
+                ),
+                _imagesPager(),
+              ],
+            ),
           ),
-          _imagesPager(),
         ],
       ),
     );
   }
+
+  Row _appBar() {
+    return Row(
+      children: <Widget>[
+        SizedBox(
+          width: 44,
+        ),
+        Expanded(
+            child: Text(
+              'Instagram',
+              textAlign: TextAlign.center,
+            )),
+        IconButton(
+            icon: Icon(
+                Icons.menu),
+            onPressed: () {
+              widget.onMenuChanged();
+            }),
+      ],
+    );
+  }
+
 
   Text _valueText(String value) => Text(
         value,
