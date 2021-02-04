@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/common_size.dart';
 import 'package:instagram_clone_ver2/constant/screen_size.dart';
+import 'package:instagram_clone_ver2/widgets/rounded_avatar.dart';
 
 class ProfileBody extends StatefulWidget {
   @override
@@ -9,7 +10,9 @@ class ProfileBody extends StatefulWidget {
 }
 
 class _ProfileBodyState extends State<ProfileBody> {
-  SelectTab _selectTab = SelectTab.left;
+  SelectedTab _selectedTab = SelectedTab.left;
+  double _leftImagesPageMargin = 0;
+  double _rightImagesPageMargin = size.width;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +21,35 @@ class _ProfileBodyState extends State<ProfileBody> {
         slivers: <Widget>[
           SliverList(
             delegate: SliverChildListDelegate([
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(common_gap),
+                    child: RoundedAvatar(
+                      size: 100,
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: common_gap),
+                      child: Table(
+                        children: [
+                          TableRow(children: [
+                            _valueText('998'),
+                            _valueText('10394'),
+                            _valueText('1111'),
+                          ]),
+                          TableRow(children: [
+                            _labelText('Post'),
+                            _labelText('Follower'),
+                            _labelText('Following'),
+                          ]),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               _userName(),
               _userBio(),
               _editProfileBtn(),
@@ -31,25 +63,56 @@ class _ProfileBodyState extends State<ProfileBody> {
     );
   }
 
+  Text _valueText(String value) => Text(
+        value,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.bold),
+      );
+
+  Text _labelText(String label) => Text(
+        label,
+        textAlign: TextAlign.center,
+        style: TextStyle(fontWeight: FontWeight.w300, fontSize: 11),
+      );
+
   SliverToBoxAdapter _imagesPager() {
     return SliverToBoxAdapter(
-          child: GridView.count(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 3,
-            childAspectRatio: 1,
-            children: List.generate(
-                30,
-                (index) => CachedNetworkImage(
-                  fit: BoxFit.cover,
-                    imageUrl: 'https://picsum.photos/id/$index/100/100')),
+      child: Stack(
+        children: <Widget>[
+          AnimatedContainer(
+            duration: Duration(milliseconds: 1000),
+            transform: Matrix4.translationValues(_leftImagesPageMargin, 0, 0),
+            curve: Curves.fastOutSlowIn,
+            child: _images(),
           ),
-        );
+          AnimatedContainer(
+            duration: Duration(milliseconds: 1000),
+            transform: Matrix4.translationValues(_rightImagesPageMargin, 0, 0),
+            curve: Curves.fastOutSlowIn,
+            child: _images(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  GridView _images() {
+    return GridView.count(
+      physics: NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      crossAxisCount: 3,
+      childAspectRatio: 1,
+      children: List.generate(
+          30,
+          (index) => CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: 'https://picsum.photos/id/$index/100/100')),
+    );
   }
 
   Widget _selectedIndicator() {
     return AnimatedContainer(
-      alignment: _selectTab == SelectTab.left
+      alignment: _selectedTab == SelectedTab.left
           ? Alignment.centerLeft
           : Alignment.centerRight,
       duration: Duration(milliseconds: 1000),
@@ -69,13 +132,12 @@ class _ProfileBodyState extends State<ProfileBody> {
           child: IconButton(
             icon: ImageIcon(
               AssetImage('assets/images/grid.png'),
-              color:
-                  _selectTab == SelectTab.left ? Colors.black : Colors.black26,
+              color: _selectedTab == SelectedTab.left
+                  ? Colors.black
+                  : Colors.black26,
             ),
             onPressed: () {
-              setState(() {
-                _selectTab = SelectTab.left;
-              });
+              _tabSelected(SelectedTab.left);
             },
           ),
         ),
@@ -83,18 +145,34 @@ class _ProfileBodyState extends State<ProfileBody> {
           child: IconButton(
             icon: ImageIcon(
               AssetImage('assets/images/saved.png'),
-              color:
-                  _selectTab == SelectTab.left ? Colors.black26 : Colors.black,
+              color: _selectedTab == SelectedTab.left
+                  ? Colors.black26
+                  : Colors.black,
             ),
             onPressed: () {
-              setState(() {
-                _selectTab = SelectTab.right;
-              });
+              _tabSelected(SelectedTab.right);
             },
           ),
         ),
       ],
     );
+  }
+
+  _tabSelected(SelectedTab selectedTab) {
+    setState(() {
+      switch (selectedTab) {
+        case SelectedTab.left:
+          _selectedTab = SelectedTab.left;
+          _leftImagesPageMargin = 0;
+          _rightImagesPageMargin = size.width;
+          break;
+        case SelectedTab.right:
+          _selectedTab = SelectedTab.right;
+          _leftImagesPageMargin = -size.width;
+          _rightImagesPageMargin = 0;
+          break;
+      }
+    });
   }
 
   Padding _editProfileBtn() {
@@ -140,4 +218,4 @@ class _ProfileBodyState extends State<ProfileBody> {
   }
 }
 
-enum SelectTab { left, right }
+enum SelectedTab { left, right }
