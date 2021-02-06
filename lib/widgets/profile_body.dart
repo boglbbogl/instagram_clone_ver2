@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/common_size.dart';
 import 'package:instagram_clone_ver2/constant/screen_size.dart';
 import 'package:instagram_clone_ver2/widgets/rounded_avatar.dart';
+import 'package:instagram_clone_ver2/screens/profile_screen.dart';
 
 class ProfileBody extends StatefulWidget {
-
   final Function() onMenuChanged;
 
   const ProfileBody({Key key, this.onMenuChanged}) : super(key: key);
@@ -14,10 +14,25 @@ class ProfileBody extends StatefulWidget {
   _ProfileBodyState createState() => _ProfileBodyState();
 }
 
-class _ProfileBodyState extends State<ProfileBody> {
+class _ProfileBodyState extends State<ProfileBody>
+    with SingleTickerProviderStateMixin {
   SelectedTab _selectedTab = SelectedTab.left;
   double _leftImagesPageMargin = 0;
   double _rightImagesPageMargin = size.width;
+  AnimationController _iconAnimationController;
+
+  @override
+  void initState() {
+    _iconAnimationController =
+        AnimationController(vsync: this, duration: duration);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _iconAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,19 +99,23 @@ class _ProfileBodyState extends State<ProfileBody> {
         ),
         Expanded(
             child: Text(
-              'Instagram',
-              textAlign: TextAlign.center,
-            )),
+          'Instagram',
+          textAlign: TextAlign.center,
+        )),
         IconButton(
-            icon: Icon(
-                Icons.menu),
+            icon: AnimatedIcon(
+              icon: AnimatedIcons.menu_close,
+              progress: _iconAnimationController,
+            ),
             onPressed: () {
               widget.onMenuChanged();
+              _iconAnimationController.status == AnimationStatus.completed
+                  ? _iconAnimationController.reverse()
+                  : _iconAnimationController.forward();
             }),
       ],
     );
   }
-
 
   Text _valueText(String value) => Text(
         value,
@@ -115,13 +134,13 @@ class _ProfileBodyState extends State<ProfileBody> {
       child: Stack(
         children: <Widget>[
           AnimatedContainer(
-            duration: Duration(milliseconds: 1000),
+            duration: duration,
             transform: Matrix4.translationValues(_leftImagesPageMargin, 0, 0),
             curve: Curves.fastOutSlowIn,
             child: _images(),
           ),
           AnimatedContainer(
-            duration: Duration(milliseconds: 1000),
+            duration: duration,
             transform: Matrix4.translationValues(_rightImagesPageMargin, 0, 0),
             curve: Curves.fastOutSlowIn,
             child: _images(),
@@ -212,7 +231,7 @@ class _ProfileBodyState extends State<ProfileBody> {
 
   Padding _editProfileBtn() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: common_gap),
+      padding: const EdgeInsets.symmetric(horizontal: common_gap, vertical: common_xxs_gap),
       child: SizedBox(
         height: 24,
         child: OutlineButton(
