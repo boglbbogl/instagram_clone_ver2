@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/screens/camera_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'constant/screen_size.dart';
 import 'file:///C:/flutterproject/instagram_clone_ver2/lib/screens/feed_screen.dart';
 import 'package:instagram_clone_ver2/screens/profile_screen.dart';
@@ -63,8 +64,33 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _openCamera() {
+  void _openCamera() async{
+    if(await checkItfPermissionGranted(context))
       Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => CameraScreen()));
+    else{
+      SnackBar snackBar = SnackBar(
+          content: Text('접근 허용시 사용 가능함'),
+        action: SnackBarAction(
+          label: 'OK',
+          onPressed: (){
+            Scaffold.of(context).hideCurrentSnackBar();
+          },
+        ),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<bool> checkItfPermissionGranted(BuildContext context) async {
+    Map<Permission, PermissionStatus> statuses = await [Permission.camera, Permission.microphone].request();
+    bool permitted = true;
+
+    statuses.forEach((permission, permissionStatus) {
+      if(!permissionStatus.isGranted)
+        permitted = false;
+    });
+
+    return permitted;
   }
 }
