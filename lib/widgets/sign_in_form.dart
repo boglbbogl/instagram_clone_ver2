@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/auth_input_decor.dart';
 import 'package:instagram_clone_ver2/constant/common_size.dart';
@@ -63,6 +64,16 @@ class _SignInFormState extends State<SignInForm> {
                     return 'Not Password form';
                   }
                 },
+              ),
+              FlatButton(
+                onPressed: (){},
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text('Forgotten Password',
+                  style: TextStyle(
+                    color: Colors.blue
+                  ),),
+                ),
               ),
               SizedBox(
                 height: common_s_gap,

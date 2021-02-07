@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_ver2/screens/camera_screen.dart';
 import 'constant/screen_size.dart';
 import 'file:///C:/flutterproject/instagram_clone_ver2/lib/screens/feed_screen.dart';
 import 'package:instagram_clone_ver2/screens/profile_screen.dart';
 
 class HomePage extends StatefulWidget {
-
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
-
   int _selectedIndex = 0;
 
   List<BottomNavigationBarItem> btmNavItems = [
@@ -30,10 +28,8 @@ class _HomePageState extends State<HomePage> {
     ProfileScreen(),
   ];
 
-
   @override
   Widget build(BuildContext context) {
-
     if (size == null) size = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -42,7 +38,7 @@ class _HomePageState extends State<HomePage> {
         children: _screens,
       ),
       bottomNavigationBar: BottomNavigationBar(
-          items: btmNavItems,
+        items: btmNavItems,
         showSelectedLabels: false,
         showUnselectedLabels: false,
         selectedItemColor: Colors.black87,
@@ -54,8 +50,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _onTabItem(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    switch (index) {
+      case 2:
+        _openCamera();
+        break;
+      default:
+        {
+          setState(() {
+            _selectedIndex = index;
+          });
+        }
+    }
+  }
+
+  void _openCamera() {
+      Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => CameraScreen()));
   }
 }

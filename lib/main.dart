@@ -12,8 +12,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: white,
       ),
-      // home: HomePage(),
-      home: AuthScreen(),
+      home: HomePage(),
+      // home: AuthScreen(),
     );
   }
 }
