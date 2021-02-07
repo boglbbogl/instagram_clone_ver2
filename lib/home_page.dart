@@ -1,3 +1,4 @@
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/screens/camera_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,6 +13,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
+  GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
   List<BottomNavigationBarItem> btmNavItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
@@ -34,6 +37,7 @@ class _HomePageState extends State<HomePage> {
     if (size == null) size = MediaQuery.of(context).size;
 
     return Scaffold(
+      key: _key,
       body: IndexedStack(
         index: _selectedIndex,
         children: _screens,
@@ -74,11 +78,12 @@ class _HomePageState extends State<HomePage> {
         action: SnackBarAction(
           label: 'OK',
           onPressed: (){
-            Scaffold.of(context).hideCurrentSnackBar();
+            _key.currentState.hideCurrentSnackBar();
+            AppSettings.openAppSettings();
           },
         ),
       );
-      Scaffold.of(context).showSnackBar(snackBar);
+      _key.currentState.showSnackBar(snackBar);
     }
   }
 
