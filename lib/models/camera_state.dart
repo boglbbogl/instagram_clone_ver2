@@ -6,6 +6,15 @@ class CameraState extends ChangeNotifier {
   CameraDescription _cameraDescription;
   bool _readyTakePhoto = false;
 
+  void dispose(){
+    if(_controller != null)
+    _controller.dispose();
+    _controller = null;
+    _cameraDescription = null;
+    _readyTakePhoto = false;
+    notifyListeners();
+  }
+
   void getReadyToTakePhoto() async {
     List<CameraDescription> cameras = await availableCameras();
 
@@ -15,7 +24,7 @@ class CameraState extends ChangeNotifier {
 
     bool init = false;
     while (init) {
-      init = await initalize();
+      init = await initialize();
     }
     await _controller.initialize();
 
@@ -28,12 +37,11 @@ class CameraState extends ChangeNotifier {
     _controller = CameraController(_cameraDescription, ResolutionPreset.medium);
   }
 
-  Future<bool> initalize() async{
+  Future<bool> initialize() async{
     try{
       await _controller.initialize();
       return true;
-    }
-    catch(e){
+    } catch(e) {
       return false;
     }
   }
