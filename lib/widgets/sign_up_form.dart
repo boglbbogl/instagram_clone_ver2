@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/auth_input_decor.dart';
 import 'package:instagram_clone_ver2/constant/common_size.dart';
-import 'package:instagram_clone_ver2/home_page.dart';
+import 'package:instagram_clone_ver2/models/firebase_auth_state.dart';
+import 'package:provider/provider.dart';
 
 import 'or_divider.dart';
 
@@ -93,7 +94,9 @@ class _SignUpFormState extends State<SignUpForm> {
               OrDivider(),
               FlatButton.icon(
                   textColor: Colors.blue,
-                  onPressed: () {},
+                  onPressed: () {
+                    Provider.of<FirebaseAuthState>(context, listen: false).changeFirebaseAuthStatus(FirebaseAuthStatus.signin);
+                  },
                   icon: ImageIcon(AssetImage('assets/images/facebook.png')),
                   label: Text('Login with facebook'))
             ],
@@ -109,8 +112,7 @@ class _SignUpFormState extends State<SignUpForm> {
       onPressed: () {
         if (_formKey.currentState.validate()) {
           print('sucess');
-          Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => HomePage()));
+          Provider.of<FirebaseAuthState>(context, listen: false).registerUser(email: _emailController.text, password: _pwController.text);
         }
       },
       child: Text(
