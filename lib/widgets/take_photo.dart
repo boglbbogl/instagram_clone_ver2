@@ -60,7 +60,7 @@ class TakePhoto extends StatelessWidget {
   }
 
   void _attemptTakePhoto(CameraState cameraState, BuildContext context) async{
-    String timeInMilli = DateTime.now().millisecondsSinceEpoch.toString();
+    final String timeInMilli = DateTime.now().millisecondsSinceEpoch.toString();
     try{
       final path = join((await getTemporaryDirectory()).path, '$timeInMilli.png');
 
