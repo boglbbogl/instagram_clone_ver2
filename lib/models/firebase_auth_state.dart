@@ -1,25 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_ver2/repo/user_network_repository.dart';
 
 class FirebaseAuthState extends ChangeNotifier {
   FirebaseAuthStatus _firebaseAuthStatus = FirebaseAuthStatus.signout;
   FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   FirebaseUser _firebaseUser;
 
-  void watchAuthChange(){
+  void watchAuthChange() {
     _firebaseAuth.onAuthStateChanged.listen((firebaseUser) {
-      if(firebaseUser == null && _firebaseUser == null){
+      if (firebaseUser == null && _firebaseUser == null) {
         return null;
-      } else if(firebaseUser != _firebaseUser){
+      } else if (firebaseUser != _firebaseUser) {
         _firebaseUser = firebaseUser;
         changeFirebaseAuthStatus();
       }
     });
   }
 
-  void registerUser(BuildContext context, {@required String email, @required String password}){
-    _firebaseAuth.createUserWithEmailAndPassword(email: email.trim(), password: password.trim()).catchError((error) {
+  void registerUser(BuildContext context,
+      {@required String email, @required String password}) async{
+    AuthResult authResult = await _firebaseAuth
+        .createUserWithEmailAndPassword(
+            email: email.trim(), password: password.trim())
+        .catchError((error) {
       String _massage = '';
       switch (error.code) {
         case 'ERROR_WEAK_PASSWORD':
@@ -32,15 +36,29 @@ class FirebaseAuthState extends ChangeNotifier {
           _massage = '이미 사용 하고있어';
           break;
       }
-      SnackBar snackBar = SnackBar(content: Text(_massage),);
+      SnackBar snackBar = SnackBar(
+        content: Text(_massage),
+      );
       Scaffold.of(context).showSnackBar(snackBar);
-    }
-    );
+    });
 
+    FirebaseUser firebaseUser = authResult.user;
+    if(firebaseUser==null){
+      SnackBar snackBar = SnackBar(
+        content: Text('Please try again later'),
+      );
+      Scaffold.of(context).showSnackBar(snackBar);
+    } else {
+      await userNetworkRepository.attemptCreateUser(userKey: firebaseUser.uid, email: _firebaseUser.email);
+    }
   }
 
-  void login(BuildContext context, {@required String email, @required String password}){
-    _firebaseAuth.signInWithEmailAndPassword(email: email.trim(), password: password.trim()).catchError((error){
+  void login(BuildContext context,
+      {@required String email, @required String password}) {
+    _firebaseAuth
+        .signInWithEmailAndPassword(
+            email: email.trim(), password: password.trim())
+        .catchError((error) {
       String _massage = '';
       switch (error.code) {
         case 'ERROR_INVALID_EMAIL':
@@ -62,14 +80,16 @@ class FirebaseAuthState extends ChangeNotifier {
           _massage = '해당 동작은 여기서 금지용';
           break;
       }
-      SnackBar snackBar = SnackBar(content: Text(_massage),);
+      SnackBar snackBar = SnackBar(
+        content: Text(_massage),
+      );
       Scaffold.of(context).showSnackBar(snackBar);
     });
   }
 
-  void signOut(){
+  void signOut() {
     _firebaseAuthStatus = FirebaseAuthStatus.signout;
-    if(_firebaseUser != null){
+    if (_firebaseUser != null) {
       _firebaseUser = null;
       _firebaseAuth.signOut();
     }
@@ -87,6 +107,7 @@ class FirebaseAuthState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
   FirebaseAuthStatus get firebaseAuthStatus => _firebaseAuthStatus;
 }
 

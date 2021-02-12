@@ -98,8 +98,7 @@ class _ProfileBodyState extends State<ProfileBody>
           width: 44,
         ),
         Expanded(
-            child: Text(
-          'Instagram',
+            child: Text('username',
           textAlign: TextAlign.center,
         )),
         IconButton(

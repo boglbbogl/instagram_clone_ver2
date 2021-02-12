@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:instagram_clone_ver2/repo/user_network_repository.dart';
 import '../widgets/post.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -9,7 +9,8 @@ class FeedScreen extends StatelessWidget {
     return Scaffold(
       appBar: CupertinoNavigationBar(
           leading: IconButton(
-            onPressed: null,
+            onPressed: (){
+            },
             icon: Icon(Icons.camera_alt,
               color: Colors.red,
             ),
@@ -22,9 +23,10 @@ class FeedScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               IconButton(
-              onPressed: null,
+              onPressed: (){
+              },
               icon: ImageIcon(
-                  AssetImage('assets/images/actionbar_camera.png'),
+                  AssetImage('assets/images/direct_message.png'),
                 color: Colors.deepPurple,
 
               ),
