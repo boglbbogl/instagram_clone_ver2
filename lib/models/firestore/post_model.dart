@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagram_clone_ver2/constant/firestore_keys.dart';
 
-class PostModel{
+class PostModel {
   final String postKey;
   final String userKey;
   final String username;
@@ -16,35 +16,38 @@ class PostModel{
   final DocumentReference reference;
 
   PostModel.fromMap(Map<String, dynamic> map, this.postKey, {this.reference})
-      :
-  userKey = map[KEY_USERKEY],
-  username = map[KEY_USERNAME],
-  postImg = map[KEY_POSTIMG],
-  numOfLikes = map[KEY_NUMOFLIKES],
-  caption = map[KEY_CAPTION],
-  lastCommentor = map[KEY_LASTCOMMENTOR],
-  lastcomment = map[KEY_LASTCOMMENT],
-  lastCommenttime = map[KEY_LASTCOMMENTTIME]==null ? DateTime.now().toUtc() : (map[KEY_LASTCOMMENTTIME] as Timestamp).toDate(),
-  numOfComment = map[KEY_NUMOFCOMMENTS],
-  posttime = map[KEY_POSTTIME]==null ? DateTime.now().toUtc() : (map[KEY_POSTTIME]as Timestamp).toDate();
-
+      : userKey = map[KEY_USERKEY],
+        username = map[KEY_USERNAME],
+        postImg = map[KEY_POSTIMG],
+        numOfLikes = map[KEY_NUMOFLIKES],
+        caption = map[KEY_CAPTION],
+        lastCommentor = map[KEY_LASTCOMMENTOR],
+        lastcomment = map[KEY_LASTCOMMENT],
+        lastCommenttime = map[KEY_LASTCOMMENTTIME] == null
+            ? DateTime.now().toUtc()
+            : (map[KEY_LASTCOMMENTTIME] as Timestamp).toDate(),
+        numOfComment = map[KEY_NUMOFCOMMENTS],
+        posttime = map[KEY_POSTTIME] == null
+            ? DateTime.now().toUtc()
+            : (map[KEY_POSTTIME] as Timestamp).toDate();
 
   PostModel.fromSnapshot(DocumentSnapshot snapshot)
       : this.fromMap(snapshot.data, snapshot.documentID,
-      reference: snapshot.reference);
+            reference: snapshot.reference);
 
-  static Map<String, dynamic> getMapForCreatePost({String userKey, String username, String caption}){
+  static Map<String, dynamic> getMapForCreatePost(
+      {String userKey, String username, String caption}) {
     Map<String, dynamic> map = Map();
-    map[KEY_USERKEY] = 'userKey';
-    map[KEY_USERNAME] = 'username';
-    map[KEY_POSTIMG] = 'postImg';
-    map[KEY_NUMOFLIKES] = 'numOfLikes';
-    map[KEY_CAPTION] = 'caption';
-    map[KEY_LASTCOMMENTOR] = 'lastCommentor';
-    map[KEY_LASTCOMMENT] = 'lastcomment';
-    map[KEY_LASTCOMMENTTIME] = 'lastCommenttime';
-    map[KEY_NUMOFCOMMENTS] = 'numOfComment';
-    map[KEY_POSTTIME] = 'posttime';
+    map[KEY_USERKEY] = userKey;
+    map[KEY_USERNAME] = username;
+    map[KEY_POSTIMG] = '';
+    map[KEY_NUMOFLIKES] = [];
+    map[KEY_CAPTION] = caption;
+    map[KEY_LASTCOMMENTOR] = '';
+    map[KEY_LASTCOMMENT] = '';
+    map[KEY_LASTCOMMENTTIME] = DateTime.now().toUtc();
+    map[KEY_NUMOFCOMMENTS] = 0;
+    map[KEY_POSTTIME] = DateTime.now().toUtc();
 
     return map;
   }

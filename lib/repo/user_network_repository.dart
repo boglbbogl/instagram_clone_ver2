@@ -21,6 +21,10 @@ class UserNetworkRepository with Transformers{
         .document(userKey)
         .snapshots().transform(toUser);
   }
+
+  Stream<List<UserModel>> getAllUserWithoutMe(){
+    return Firestore.instance.collection(COLLECTION_USERS).snapshots().transform(toUsersExceptMe);
+  }
 }
 
 UserNetworkRepository userNetworkRepository = UserNetworkRepository();

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -52,30 +51,7 @@ class _SharePostScreenState extends State<SharePostScreen> {
         title: Text('New Post'),
         actions: <Widget>[
           FlatButton(
-              onPressed: () async {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => MyProgressIndicator(),
-                  isDismissible: false,
-                  enableDrag: false,
-                );
-                await imageNetworkRepository.uploadImage(
-                    widget.imageFile, postKey: widget.postKey);
-
-                UserModel usermodel = Provider
-                    .of<UserModelState>(context, listen: false)
-                    .userModel;
-
-                await postNetworkRepository.createNewPost(widget.postKey,
-                    PostModel.getMapForCreatePost(
-                        userKey: usermodel.userKey,
-                        username: usermodel.username,
-                        caption: _textEditingController.text
-                    ),
-                );
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
+              onPressed: sharePostProcedure,
               child: Text(
                 'Share',
                 textScaleFactor: 1.4,
@@ -102,6 +78,38 @@ class _SharePostScreenState extends State<SharePostScreen> {
       ),
     );
   }
+
+  void sharePostProcedure() async {
+      showModalBottomSheet(
+        context: context,
+        builder: (_) => MyProgressIndicator(),
+        isDismissible: false,
+        enableDrag: false,
+      );
+      await imageNetworkRepository.uploadImage(
+          widget.imageFile, postKey: widget.postKey);
+
+      UserModel usermodel = Provider
+          .of<UserModelState>(context, listen: false)
+          .userModel;
+
+      await postNetworkRepository.createNewPost(
+        widget.postKey,
+        PostModel.getMapForCreatePost(
+            userKey: usermodel.userKey,
+            username: usermodel.username,
+            caption: _textEditingController.text
+        ),
+      );
+      String postImgLink = await imageNetworkRepository.getPostImageUrl(widget.postKey);
+
+      await postNetworkRepository.updatePostImageUrl(postKey: widget.postKey, postImg: postImgLink);
+
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    }
+
+
 
   Tags _tags() {
     return Tags(

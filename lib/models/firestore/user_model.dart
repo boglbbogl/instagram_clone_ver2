@@ -13,7 +13,7 @@ class UserModel {
   final DocumentReference reference;
 
   UserModel.fromMap(Map<String, dynamic> map, this.userKey, {this.reference})
-      : profileImg = map[KEY_PROFILEIMAG],
+      : profileImg = map[KEY_PROFILEIMG],
         username = map[KEY_USERNAME],
         email = map[KEY_EMAIL],
         likedPosts = map[KEY_LIKEDPOSTS],
@@ -27,7 +27,7 @@ class UserModel {
 
   static Map<String, dynamic> getMapForCreateUser(String email){
     Map<String, dynamic> map = Map();
-    map[KEY_PROFILEIMAG] = '';
+    map[KEY_PROFILEIMG] = '';
     map[KEY_USERNAME] = email.split('@')[0];
     map[KEY_EMAIL] = email;
     map[KEY_LIKEDPOSTS] = [];

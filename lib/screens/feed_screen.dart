@@ -23,7 +23,10 @@ class FeedScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               IconButton(
-              onPressed: (){
+              onPressed: ()async{
+                userNetworkRepository.getAllUserWithoutMe().listen((users) {
+                  print(users);
+                });
               },
               icon: ImageIcon(
                   AssetImage('assets/images/direct_message.png'),
