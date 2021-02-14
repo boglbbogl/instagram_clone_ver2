@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'helper/image_helper.dart';
 
 class ImageNetworkRepository{
-  Future<StorageTaskSnapshot> uploadImageNCreateNewPost(File originImage, {@required String postKey}) async{
+  Future<StorageTaskSnapshot> uploadImage(File originImage, {@required String postKey}) async{
     try{
       final File resized = await compute(getResizedImage, originImage);
 

@@ -13,12 +13,12 @@ const KEY_USERNAME = 'username';
 const KEY_COMMENT = 'comment';
 const KEY_COMMENTTIME = 'commenttime';
 
-const KEY_POSTING = 'posting';
-const KEY_POSTURL = 'posturl';
+const KEY_POSTKEY = 'postkey';
+const KEY_POSTIMG = 'post_ima';
 const KEY_CAPTION = 'caption';
 const KEY_LASTCOMMENT = 'last_comment';
 const KEY_LASTCOMMENTOR = 'last_commentor';
-const KEY_LASTCOMMENTTIME = 'last_commenttime';
+const KEY_LASTCOMMENTTIME = 'last_comment_time';
 const KEY_NUMOFLIKES = 'num_of_likes';
 const KEY_NUMOFCOMMENTS = 'num_of_comments';
 const KEY_POSTTIME = 'post_time';
