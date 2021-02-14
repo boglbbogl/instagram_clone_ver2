@@ -5,9 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/screens/camera_screen.dart';
 import 'package:instagram_clone_ver2/screens/search_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'constant/screen_size.dart';
 import 'file:///C:/flutterproject/instagram_clone_ver2/lib/screens/feed_screen.dart';
 import 'package:instagram_clone_ver2/screens/profile_screen.dart';
+
+import 'models/user_model_state.dart';
+import 'widgets/my_progress_indicator.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -28,7 +32,17 @@ class _HomePageState extends State<HomePage> {
   ];
 
   List<Widget> _screens = [
-    FeedScreen(),
+    Consumer<UserModelState>(
+      builder:
+          (BuildContext context, UserModelState userModelState, Widget child) {
+        if (userModelState == null ||
+            userModelState.userModel == null ||
+            userModelState.userModel.followings == null ||
+            userModelState.userModel.followings.isEmpty)
+          return MyProgressIndicator();
+        return FeedScreen(userModelState.userModel.followings);
+      },
+    ),
     SearchScreen(),
     Container(color: Colors.cyanAccent),
     Container(color: Colors.deepOrangeAccent),
@@ -94,9 +108,7 @@ class _HomePageState extends State<HomePage> {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.camera,
       Permission.microphone,
-      Platform.isIOS?
-      Permission.photos:
-      Permission.storage
+      Platform.isIOS ? Permission.photos : Permission.storage
     ].request();
     bool permitted = true;
 

@@ -12,7 +12,7 @@ class PostModel {
   final String lastcomment;
   final DateTime lastCommenttime;
   final int numOfComment;
-  final DateTime posttime;
+  final DateTime postTime;
   final DocumentReference reference;
 
   PostModel.fromMap(Map<String, dynamic> map, this.postKey, {this.reference})
@@ -27,7 +27,7 @@ class PostModel {
             ? DateTime.now().toUtc()
             : (map[KEY_LASTCOMMENTTIME] as Timestamp).toDate(),
         numOfComment = map[KEY_NUMOFCOMMENTS],
-        posttime = map[KEY_POSTTIME] == null
+        postTime = map[KEY_POSTTIME] == null
             ? DateTime.now().toUtc()
             : (map[KEY_POSTTIME] as Timestamp).toDate();
 
