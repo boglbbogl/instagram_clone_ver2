@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/common_size.dart';
 import 'package:instagram_clone_ver2/constant/screen_size.dart';
+import 'package:instagram_clone_ver2/repo/image_network_repository.dart';
 import 'comment.dart';
 import 'my_progress_indicator.dart';
 import 'rounded_avatar.dart';
@@ -101,26 +102,38 @@ class Post extends StatelessWidget {
     );
   }
 
-  CachedNetworkImage _postImage() {
-    return CachedNetworkImage(
-      imageUrl: 'https://picsum.photos/id/$index/200/200',
-      placeholder: (BuildContext context, String url) {
-        return MyProgressIndicator(
-          containerSize: size.width,
+  Widget _postImage() {
+
+    Widget progress = MyProgressIndicator(
+      containerSize: size.width,
+    );
+
+    return FutureBuilder<dynamic>(
+      future: imageNetworkRepository.getPostImageUrl('1613289044089_bLRKcuG1TpMUMzFLd4Yqi8d56qN2'),
+      builder: (context, snapshot) {
+
+        if(snapshot.hasData)
+        return CachedNetworkImage(
+          imageUrl: snapshot.data.toString(),
+          placeholder: (BuildContext context, String url) {
+            return progress;
+          },
+          imageBuilder: (BuildContext context, ImageProvider imageProvider) {
+            return AspectRatio(
+              aspectRatio: 1,
+              child: Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                  image: imageProvider,
+                  fit: BoxFit.cover,
+                )),
+              ),
+            );
+          },
         );
-      },
-      imageBuilder: (BuildContext context, ImageProvider imageProvider) {
-        return AspectRatio(
-          aspectRatio: 1,
-          child: Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-              image: imageProvider,
-              fit: BoxFit.cover,
-            )),
-          ),
-        );
-      },
+        else
+          return progress;
+      }
     );
   }
 }
