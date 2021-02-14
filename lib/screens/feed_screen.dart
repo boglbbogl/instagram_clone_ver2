@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:instagram_clone_ver2/repo/user_network_repository.dart';
 import '../widgets/post.dart';
 
 class FeedScreen extends StatelessWidget {
@@ -23,11 +22,7 @@ class FeedScreen extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               IconButton(
-              onPressed: ()async{
-                userNetworkRepository.getAllUserWithoutMe().listen((users) {
-                  print(users);
-                });
-              },
+              onPressed: (){},
               icon: ImageIcon(
                   AssetImage('assets/images/direct_message.png'),
                 color: Colors.deepPurple,

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:instagram_clone_ver2/models/firestore/user_model.dart';
+import 'package:instagram_clone_ver2/models/user_model_state.dart';
+import 'package:instagram_clone_ver2/repo/user_network_repository.dart';
+import 'package:instagram_clone_ver2/widgets/my_progress_indicator.dart';
 import 'package:instagram_clone_ver2/widgets/rounded_avatar.dart';
+import 'package:provider/provider.dart';
 
 class SearchScreen extends StatefulWidget {
   @override
@@ -7,44 +12,77 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-
-  List<bool> followings = List.generate(30, (index) => false);
-
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: ListView.separated(
-          itemCount: followings.length,
-          separatorBuilder: (context, index) {
-            return Divider(color: Colors.grey,);
-          },
-          itemBuilder: (context, index) {
-            return ListTile(
-              onTap: (){
-                setState(() {
-                  followings[index] = !followings[index];
-                });
-              },
-              leading: RoundedAvatar(),
-              title: Text('username $index'),
-              subtitle: Text('user bio number $index'),
-              trailing: Container(
-                height: 30,
-                width: 80,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  color: followings[index] ? Colors.red[50]: Colors.blue[50],
-                  border: Border.all(color: followings[index] ? Colors.red : Colors.blue, width: 0.5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  followings[index] ? 'following' : 'follower',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold),),
-              ),
-            );
-          },
-        ));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Follow / Unfollow'),
+      ),
+      body: StreamBuilder<List<UserModel>>(
+          stream: userNetworkRepository.getAllUserWithoutMe(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData)
+              return SafeArea(child: Consumer<UserModelState>(
+                builder: (BuildContext context, UserModelState myUserModelState,
+                    Widget child) {
+                  return ListView.separated(
+                      itemBuilder: (context, index) {
+                        UserModel otherUser = snapshot.data[index];
+                        bool amIFollowing =
+                            Provider.of<UserModelState>(context, listen: false)
+                                .amIFollowingThisUser(otherUser.userKey);
+                        return ListTile(
+                          onTap: () {
+                            setState(() {
+                              amIFollowing
+                                  ? userNetworkRepository.unfollowUser(
+                                      myUserKey:
+                                          myUserModelState.userModel.userKey,
+                                      otherUserKey: otherUser.userKey)
+                                  : userNetworkRepository.followUser(
+                                      myUserKey:
+                                          myUserModelState.userModel.userKey,
+                                      otherUserKey: otherUser.userKey);
+                            });
+                          },
+                          leading: RoundedAvatar(),
+                          title: Text(otherUser.username),
+                          subtitle:
+                              Text('this is user bio of ${otherUser.username}'),
+                          trailing: Container(
+                            height: 30,
+                            width: 80,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: amIFollowing
+                                  ? Colors.red[50]
+                                  : Colors.blue[50],
+                              border: Border.all(
+                                  color:
+                                      amIFollowing ? Colors.red : Colors.blue,
+                                  width: 0.5),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              amIFollowing ? 'unfollow' : 'follow',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          color: Colors.grey,
+                        );
+                      },
+                      itemCount: snapshot.data.length);
+                },
+              ));
+            else {
+              return MyProgressIndicator();
+            }
+          }),
+    );
   }
 }
