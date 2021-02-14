@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:instagram_clone_ver2/constant/firestore_keys.dart';
 import 'package:instagram_clone_ver2/models/firestore/user_model.dart';
 
-class UserNetworkRepository {
+import 'helper/transformers.dart';
+
+class UserNetworkRepository with Transformers{
   Future<void> attemptCreateUser({String userKey, String email}) async {
     final DocumentReference userRef =
         Firestore.instance.collection(COLLECTION_USERS).document(userKey);
@@ -17,7 +19,7 @@ class UserNetworkRepository {
     return Firestore.instance
         .collection(COLLECTION_USERS)
         .document(userKey)
-        .snapshots().transform(streamTransformer);
+        .snapshots().transform(toUser);
   }
 }
 

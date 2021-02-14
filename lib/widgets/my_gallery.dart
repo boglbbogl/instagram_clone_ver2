@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/models/gallery_state.dart';
+import 'package:instagram_clone_ver2/models/user_model_state.dart';
+import 'package:instagram_clone_ver2/repo/helper/generate_post_key.dart';
 import 'package:instagram_clone_ver2/screens/share_post_screen.dart';
 import 'package:local_image_provider/device_image.dart';
 import 'package:path/path.dart';
@@ -32,11 +34,11 @@ class _MyGalleryState extends State<MyGallery> {
         InkWell(
           onTap: () async {
             Uint8List bytes = await localImage.getScaledImageBytes(galleryState.localImageProvider, 0.3);
-            final String timeInMilli = DateTime.now().millisecondsSinceEpoch.toString();
+            final String postKey = getNewPostKey(Provider.of<UserModelState>(context, listen: false).userModel);
             try{
-              final path = join((await getTemporaryDirectory()).path, '$timeInMilli.png');
+              final path = join((await getTemporaryDirectory()).path, '$postKey.png');
               File imageFile = File(path)..writeAsBytesSync(bytes);
-              Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePostScreen(imageFile)));
+              Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePostScreen(imageFile, postKey: postKey ,)));
             }catch(e){
 
             }

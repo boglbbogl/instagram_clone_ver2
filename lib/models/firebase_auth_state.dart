@@ -42,20 +42,21 @@ class FirebaseAuthState extends ChangeNotifier {
       Scaffold.of(context).showSnackBar(snackBar);
     });
 
-    FirebaseUser firebaseUser = authResult.user;
-    if(firebaseUser==null){
+     _firebaseUser = authResult.user;
+    if(_firebaseUser==null){
       SnackBar snackBar = SnackBar(
         content: Text('Please try again later'),
       );
       Scaffold.of(context).showSnackBar(snackBar);
     } else {
-      await userNetworkRepository.attemptCreateUser(userKey: firebaseUser.uid, email: _firebaseUser.email);
+      await userNetworkRepository.attemptCreateUser(userKey: _firebaseUser.uid, email: _firebaseUser.email);
     }
   }
 
   void login(BuildContext context,
-      {@required String email, @required String password}) {
-    _firebaseAuth
+      {@required String email, @required String password}) async{
+    changeFirebaseAuthStatus(FirebaseAuthStatus.progress);
+    AuthResult authResult = await _firebaseAuth
         .signInWithEmailAndPassword(
             email: email.trim(), password: password.trim())
         .catchError((error) {
@@ -85,6 +86,13 @@ class FirebaseAuthState extends ChangeNotifier {
       );
       Scaffold.of(context).showSnackBar(snackBar);
     });
+
+    _firebaseUser = authResult.user;
+    if(_firebaseUser == null){
+      SnackBar snackBar = SnackBar(
+          content: Text('Please try again later!'),);
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 
   void signOut() {
@@ -109,6 +117,7 @@ class FirebaseAuthState extends ChangeNotifier {
   }
 
   FirebaseAuthStatus get firebaseAuthStatus => _firebaseAuthStatus;
+  FirebaseUser get firebaseUser => _firebaseUser;
 }
 
 enum FirebaseAuthStatus { signout, progress, signin }

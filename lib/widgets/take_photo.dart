@@ -1,10 +1,11 @@
 import 'dart:io';
-
 import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/screen_size.dart';
 import 'package:instagram_clone_ver2/models/camera_state.dart';
+import 'package:instagram_clone_ver2/models/user_model_state.dart';
+import 'package:instagram_clone_ver2/repo/helper/generate_post_key.dart';
 import 'package:instagram_clone_ver2/screens/share_post_screen.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -60,14 +61,14 @@ class TakePhoto extends StatelessWidget {
   }
 
   void _attemptTakePhoto(CameraState cameraState, BuildContext context) async{
-    final String timeInMilli = DateTime.now().millisecondsSinceEpoch.toString();
+    final String postKey = getNewPostKey(Provider.of<UserModelState>(context, listen: false).userModel);
     try{
-      final path = join((await getTemporaryDirectory()).path, '$timeInMilli.png');
+      final path = join((await getTemporaryDirectory()).path, '$postKey.png');
 
       await cameraState.controller.takePicture(path);
 
       File imageFile = File(path);
-      Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePostScreen(imageFile)));
+      Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePostScreen(imageFile, postKey: postKey,)));
     }catch(e){
 
     }

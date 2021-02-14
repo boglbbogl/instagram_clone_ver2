@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone_ver2/constant/common_size.dart';
 import 'package:instagram_clone_ver2/constant/screen_size.dart';
+import 'package:instagram_clone_ver2/models/user_model_state.dart';
 import 'package:instagram_clone_ver2/widgets/rounded_avatar.dart';
 import 'package:instagram_clone_ver2/screens/profile_screen.dart';
+import 'package:provider/provider.dart';
 
 class ProfileBody extends StatefulWidget {
   final Function() onMenuChanged;
@@ -75,7 +77,7 @@ class _ProfileBodyState extends State<ProfileBody>
                         ),
                       ],
                     ),
-                    _userName(),
+                    _userName(context),
                     _userBio(),
                     _editProfileBtn(),
                     _tabButton(),
@@ -98,7 +100,8 @@ class _ProfileBodyState extends State<ProfileBody>
           width: 44,
         ),
         Expanded(
-            child: Text('username',
+            child: Text(
+          'username',
           textAlign: TextAlign.center,
         )),
         IconButton(
@@ -230,7 +233,8 @@ class _ProfileBodyState extends State<ProfileBody>
 
   Padding _editProfileBtn() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: common_gap, vertical: common_xxs_gap),
+      padding: const EdgeInsets.symmetric(
+          horizontal: common_gap, vertical: common_xxs_gap),
       child: SizedBox(
         height: 24,
         child: OutlineButton(
@@ -250,11 +254,14 @@ class _ProfileBodyState extends State<ProfileBody>
     );
   }
 
-  Widget _userName() {
+  Widget _userName(BuildContext context) {
+    UserModelState userModelState = Provider.of<UserModelState>(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: common_gap),
       child: Text(
-        'username',
+        userModelState == null || userModelState.userModel == null
+            ? ""
+            : userModelState.userModel.username,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );
