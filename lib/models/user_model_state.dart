@@ -16,9 +16,9 @@ class UserModelState extends ChangeNotifier{
 
   set currentStreamSub(StreamSubscription<UserModel> currentStreamSub) => _currentStreamSub = currentStreamSub;
 
-  clear(){
+  clear() async{
     if(_currentStreamSub != null)
-      _currentStreamSub.cancel();
+     await _currentStreamSub.cancel();
     _currentStreamSub = null;
     _userModel = null;
   }

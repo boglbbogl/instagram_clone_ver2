@@ -7,8 +7,6 @@ import 'package:instagram_clone_ver2/models/camera_state.dart';
 import 'package:instagram_clone_ver2/models/user_model_state.dart';
 import 'package:instagram_clone_ver2/repo/helper/generate_post_key.dart';
 import 'package:instagram_clone_ver2/screens/share_post_screen.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'my_progress_indicator.dart';
 
@@ -63,11 +61,11 @@ class TakePhoto extends StatelessWidget {
   void _attemptTakePhoto(CameraState cameraState, BuildContext context) async{
     final String postKey = getNewPostKey(Provider.of<UserModelState>(context, listen: false).userModel);
     try{
-      final path = join((await getTemporaryDirectory()).path, '$postKey.png');
+      // final path = join((await getTemporaryDirectory()).path, '$postKey.png');
 
-      await cameraState.controller.takePicture(path);
+      XFile pictureTaken = await cameraState.controller.takePicture();
 
-      File imageFile = File(path);
+      File imageFile = File(pictureTaken.path);
       Navigator.of(context).push(MaterialPageRoute(builder: (_) => SharePostScreen(imageFile, postKey: postKey,)));
     }catch(e){
 
